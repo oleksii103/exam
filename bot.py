@@ -1,9 +1,11 @@
+import os
+from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
-TOKEN = "8084005848:AAFru2eyroXl79CwLumjI53_euBIq8icmQc" #@exsam29b_bot
+load_dotenv()
+TOKEN = os.getenv("BOT_TOKEN")
 
-# main menu logic
 main_menu = ReplyKeyboardMarkup(
     keyboard=[
         ["🔹 option 1", "🔸 option 2", "⚙️ option 3"],
@@ -13,7 +15,6 @@ main_menu = ReplyKeyboardMarkup(
     one_time_keyboard=False
 )
 
-# sub menu logic
 sub_menu = ReplyKeyboardMarkup(
     keyboard=[
         ["🔙 Back to main menu"],
@@ -23,7 +24,6 @@ sub_menu = ReplyKeyboardMarkup(
     one_time_keyboard=False
 )
 
-# /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         await update.message.reply_text(
@@ -31,13 +31,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=main_menu
         )
 
-# /restart command
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         await update.message.reply_text("🔄 Reseting Bot...")
         await start(update, context)
 
-# buttons logic
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.message.text
 
@@ -58,7 +56,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("⚠️ Unknown command. Please choose from the menu.")
 
-# bot initialization
 app = ApplicationBuilder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("restart", restart))
