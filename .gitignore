@@ -1,0 +1,29 @@
+# ❌ Файл із токеном/ключами
+.env
+token.txt
+
+# ❌ Python кеш-файли
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ❌ Віртуальне середовище (якщо створене в папці проєкту)
+venv/
+env/
+.venv/
+.env/
+
+# ❌ IDE-файли
+.vscode/
+.idea/
+
+# ❌ Файли логів і тимчасові
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# ❌ Файли, пов’язані з Linux/Mac
+*.sublime-workspace
+*.sublime-project
