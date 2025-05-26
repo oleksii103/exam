@@ -1,4 +1,4 @@
-#Англійська локалізація
+# Англійська локалізація
 gb_localization = {
     "Donate": "💳 Donate",
     "Portfolio": "📁 Portfolio",
@@ -19,15 +19,14 @@ gb_localization = {
         "Check out my work here:\n"
         "https://your-portfolio-link.com"
     ),
-    "OptionMes": "⚙️ Here you can find additional options (coming soon).",
+    "OptionMes": "⚙️ Here you can change your language or go back.",
     "InfoMes": "ℹ️ This is some information.",
     "HelpMes": "❓ This is the help section.",
     "Error": "⚠️ Unknown command. Please choose from the menu.",
-    "ResetingMes": "🔄 Restarting...\nPlease select your language again:"
+    "ResetingMes": "🔄 Resetting Bot...\nPlease select your language again:"
 }
 
-
-#Українська локалізація 
+# Українська локалізація
 ua_localization = {
     "Donate": "💳 Донат",
     "Portfolio": "📁 Портфоліо",
@@ -48,9 +47,9 @@ ua_localization = {
         "Ознайомтесь з моїми роботами тут:\n"
         "https://your-portfolio-link.com"
     ),
-    "OptionMes": "⚙️ Тут з’являться додаткові опції (незабаром).",
+    "OptionMes": "⚙️ Тут ви можете змінити мову або повернутися назад.",
     "InfoMes": "ℹ️ Це інформаційне повідомлення.",
     "HelpMes": "❓ Це розділ допомоги.",
     "Error": "⚠️ Невідома команда. Будь ласка, оберіть з меню.",
-    "ResetingMes": "🔄 Перезапуск...\nБудь ласка, оберіть мову ще раз:"
+    "ResetingMes": "🔄 Скидання бота...\nБудь ласка, оберіть мову ще раз:"
 }
