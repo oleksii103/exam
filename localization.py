@@ -1,9 +1,9 @@
-#внглійська локалізація
+#Англійська локалізація
 gb_localization = {
     "Donate": "💳 Donate",
     "Portfolio": "📁 Portfolio",
-    "Option": "⚙️ option 3",
-    "Reset": "🔄 Reset",
+    "Option": "⚙️ Options",
+    "Reset": "🔄 Change Language",
     "BackToMenu": "🔙 Back to main menu",
     "Info": "ℹ️ Info",
     "Help": "❓ Help",
@@ -19,19 +19,20 @@ gb_localization = {
         "Check out my work here:\n"
         "https://your-portfolio-link.com"
     ),
-    "OptionMes" : "You selected Option 3 ⚙️",
-    "InfoMes" : "ℹ️ This is some information.",
-    "HelpMes" : "❓ This is the help section.",
-    "Error" : "⚠️ Unknown command. Please choose from the menu.",
-    "ResetingMes": "🔄 Resetting Bot...\nPlease select your language again:"
+    "OptionMes": "⚙️ Here you can find additional options (coming soon).",
+    "InfoMes": "ℹ️ This is some information.",
+    "HelpMes": "❓ This is the help section.",
+    "Error": "⚠️ Unknown command. Please choose from the menu.",
+    "ResetingMes": "🔄 Restarting...\nPlease select your language again:"
 }
+
 
 #Українська локалізація 
 ua_localization = {
     "Donate": "💳 Донат",
     "Portfolio": "📁 Портфоліо",
-    "Option": "⚙️ Опція 3",
-    "Reset": "🔄 Скинути",
+    "Option": "⚙️ Опції",
+    "Reset": "🔄 Змінити мову",
     "BackToMenu": "🔙 Назад до головного меню",
     "Info": "ℹ️ Інфо",
     "Help": "❓ Допомога",
@@ -47,9 +48,9 @@ ua_localization = {
         "Ознайомтесь з моїми роботами тут:\n"
         "https://your-portfolio-link.com"
     ),
-    "OptionMes": "Ви обрали Опцію 3 ⚙️",
+    "OptionMes": "⚙️ Тут з’являться додаткові опції (незабаром).",
     "InfoMes": "ℹ️ Це інформаційне повідомлення.",
     "HelpMes": "❓ Це розділ допомоги.",
     "Error": "⚠️ Невідома команда. Будь ласка, оберіть з меню.",
-    "ResetingMes": "🔄 Скидання бота...\nБудь ласка, оберіть мову ще раз:"
+    "ResetingMes": "🔄 Перезапуск...\nБудь ласка, оберіть мову ще раз:"
 }

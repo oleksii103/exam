@@ -4,9 +4,8 @@ from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
-
 load_dotenv("token.env")
-TOKEN = os.getenv("BOT_TOKEN")
+TOKEN = os.getenv(" ")
 
 localiz = {}
 
@@ -66,12 +65,11 @@ async def clear_previous_bot_message(update: Update, context: ContextTypes.DEFAU
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = context.user_data.get("lang", gb_localization)
     await update.message.reply_text(
-            lang["ResetingMes"],
-            reply_markup=language_menu
+        lang["ResetingMes"],
+        reply_markup=language_menu
     )
     if update.message:
         context.user_data.clear()
-    
 
 # Вивід головного меню
 async def show_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -103,27 +101,23 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.chat_id
 
     if msg in ["💳 Donate", "💳 Донат"]:
-        donate_text = (
-            lang["DonateMes"]
-        )
+        donate_text = lang["DonateMes"]
         sent_msg = await update.message.reply_text(donate_text, parse_mode="Markdown", reply_markup=get_sub_menu(lang))
         context.user_data["last_bot_message_id"] = sent_msg.message_id
 
     elif msg in ["📁 Portfolio", "📁 Портфоліо"]:
-        portfolio_text = (
-            lang["PortfolioMes"]
-        )
+        portfolio_text = lang["PortfolioMes"]
         sent_msg = await update.message.reply_text(portfolio_text, parse_mode="Markdown", reply_markup=get_sub_menu(lang))
         context.user_data["last_bot_message_id"] = sent_msg.message_id
 
-    elif msg in ["⚙️ option 3", "⚙️ Опція 3"]:
+    elif msg in ["⚙️ Options", "⚙️ Опції"]:
         sent_msg = await update.message.reply_text(
             lang["OptionMes"],
             reply_markup=get_sub_menu(lang)
         )
         context.user_data["last_bot_message_id"] = sent_msg.message_id
 
-    elif msg in ["🔄 Reset", "🔄 Скинути"]:
+    elif msg in ["🔄 Change Language", "🔄 Змінити мову"]:
         await restart(update, context)
 
     elif msg in ["🔙 Back to main menu", "🔙 Назад до головного меню"]:
@@ -131,21 +125,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_main_menu(update, context)
 
     elif msg in ["ℹ️ Info", "ℹ️ Інфо"]:
-        sent_msg = await update.message.reply_text(
-            lang["InfoMes"]
-        )
+        sent_msg = await update.message.reply_text(lang["InfoMes"])
         context.user_data["last_bot_message_id"] = sent_msg.message_id
 
     elif msg in ["❓ Help", "❓ Допомога"]:
-        sent_msg = await update.message.reply_text(
-            lang ["HelpMes"]
-        )
+        sent_msg = await update.message.reply_text(lang["HelpMes"])
         context.user_data["last_bot_message_id"] = sent_msg.message_id
 
     else:
-        await update.message.reply_text(
-            lang["Error"]
-        )
+        await update.message.reply_text(lang["Error"])
 
 # Запуск бота
 app = ApplicationBuilder().token(TOKEN).build()
