@@ -1,67 +1,54 @@
 import os
-from localization import gb_localization, ua_localization
+import asyncio
 from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
+from localization import gb_localization, ua_localization
 
 load_dotenv("token.env")
 TOKEN = os.getenv("BOT_TOKEN")
 
-# Меню вибору мови
+user_ids = set()  # <-- зберігаємо chat_id для розсилки
+
 language_menu = ReplyKeyboardMarkup(
-    keyboard=[
-        ["🇬🇧 English", "🇺🇦 Українська"]
-    ],
+    keyboard=[["🇬🇧 English", "🇺🇦 Українська"]],
     resize_keyboard=True,
     one_time_keyboard=True
 )
 
-# Головне меню
 def get_main_menu(lang):
     return ReplyKeyboardMarkup(
-        keyboard=[
-            [lang["Donate"], lang["Portfolio"], lang["Option"]]
-        ],
+        keyboard=[[lang["Donate"], lang["Portfolio"], lang["Option"]]],
         resize_keyboard=True,
         one_time_keyboard=False
     )
 
-# Підменю
 def get_sub_menu(lang):
     return ReplyKeyboardMarkup(
-        keyboard=[
-            [lang["BackToMenu"]],
-            [lang["Info"], lang["Help"]]
-        ],
+        keyboard=[[lang["BackToMenu"]], [lang["Info"], lang["Help"]]],
         resize_keyboard=True,
         one_time_keyboard=False
     )
 
-# Меню опцій
 def get_options_menu(lang):
     return ReplyKeyboardMarkup(
-        keyboard=[
-            [lang["Reset"]],
-            [lang["BackToMenu"]]
-        ],
+        keyboard=[[lang["Reset"]], [lang["BackToMenu"]]],
         resize_keyboard=True,
         one_time_keyboard=False
     )
 
-# /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         context.user_data.clear()
+        user_ids.add(update.effective_chat.id)  # Додаємо до списку для розсилки
         await update.message.reply_text(
             "Please select your language / Будь ласка, оберіть мову:",
             reply_markup=language_menu
         )
 
-# Очистка попереднього повідомлення
 async def clear_previous_bot_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.chat_id
     msg_id = context.user_data.get("last_bot_message_id")
-
     if msg_id:
         try:
             await context.bot.delete_message(chat_id=chat_id, message_id=msg_id)
@@ -69,7 +56,6 @@ async def clear_previous_bot_message(update: Update, context: ContextTypes.DEFAU
             print(f"Failed to delete message: {e}")
         context.user_data["last_bot_message_id"] = None
 
-# Зміна мови (перезапуск)
 async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = context.user_data.get("lang", gb_localization)
     await update.message.reply_text(
@@ -79,22 +65,20 @@ async def restart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         context.user_data.clear()
 
-# Показ головного меню
 async def show_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = context.user_data.get("lang", gb_localization)
     text = "Choose one option:" if lang == gb_localization else "Оберіть одну з опцій:"
     await update.message.reply_text(text, reply_markup=get_main_menu(lang))
 
-# Показ меню опцій
 async def show_options_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = context.user_data.get("lang", gb_localization)
     await update.message.reply_text(lang["OptionMes"], reply_markup=get_options_menu(lang))
 
-# Обробка повідомлень
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.message.text
+    chat_id = update.message.chat_id
+    user_ids.add(chat_id)  # також додаємо сюди, якщо ще не був доданий
 
-    # Вибір мови
     if msg == "🇬🇧 English":
         context.user_data["lang"] = gb_localization
         await update.message.reply_text(gb_localization["LocalMes"])
@@ -110,8 +94,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not lang:
         await update.message.reply_text("Please select a language first / Спочатку оберіть мову:")
         return
-
-    chat_id = update.message.chat_id
 
     if msg in ["💳 Donate", "💳 Донат"]:
         sent_msg = await update.message.reply_text(lang["DonateMes"], parse_mode="Markdown", reply_markup=get_sub_menu(lang))
@@ -142,8 +124,22 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text(lang["Error"])
 
-# Запуск бота
-app = ApplicationBuilder().token(TOKEN).build()
+# 🕒 Функція періодичної розсилки
+async def broadcast_message(application):
+    while True:
+        for chat_id in user_ids:
+            try:
+                await application.bot.send_message(chat_id=chat_id, text="⏰ Нагадування: кожні 90 хвилин!")
+            except Exception as e:
+                print(f"Помилка при надсиланні повідомлення до {chat_id}: {e}")
+        await asyncio.sleep(1 * 60)  # 90 хвилин
+ 
+# 🔁 Після запуску додатку запускаємо розсилку
+async def on_startup(application):
+    asyncio.create_task(broadcast_message(application))
+
+# 🚀 Запуск бота
+app = ApplicationBuilder().token(TOKEN).post_init(on_startup).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("restart", restart))
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
