@@ -1,14 +1,17 @@
 import os
+import random
 import asyncio
 from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 from localization import gb_localization, ua_localization
 
+PHOTO_FOLDER = "photos" #👈 тута фоточки
+
 load_dotenv("token.env")
 TOKEN = os.getenv("BOT_TOKEN")
 
-user_ids = set()  # <-- зберігаємо chat_id для розсилки
+user_ids = set()  #👈 тута зберігаємо chat_id для розсилки
 
 language_menu = ReplyKeyboardMarkup(
     keyboard=[["🇬🇧 English", "🇺🇦 Українська"]],
@@ -124,21 +127,35 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text(lang["Error"])
 
-# 🕒 Функція періодичної розсилки
+#  отут розсилка починається🥳
 async def broadcast_message(application):
     while True:
         for chat_id in user_ids:
             try:
-                await application.bot.send_message(chat_id=chat_id, text="⏰ Нагадування: кожні 90 хвилин!")
+                # тут ми текст розсилки, маємо навіть на інгліші😱
+                message = "⏰ Нагадування: кожні 90 хвилин!\n⏰ Reminder: every 90 minutes!" #👈 тут можеш текст поміняти 
+                await application.bot.send_message(chat_id=chat_id, text=message)
+
+                # тут ми отримуємо фоточки з теки📷
+                photos = [file for file in os.listdir(PHOTO_FOLDER) if file.lower().endswith(('.png', '.jpg', '.jpeg'))]
+                if photos:
+                    random_photo = random.choice(photos)
+                    photo_path = os.path.join(PHOTO_FOLDER, random_photo)
+
+                    # а тут Боги рандома вибирають одну😇
+                    with open(photo_path, 'rb') as photo_file:
+                        await application.bot.send_photo(chat_id=chat_id, photo=photo_file)
+
             except Exception as e:
                 print(f"Помилка при надсиланні повідомлення до {chat_id}: {e}")
-        await asyncio.sleep(1 * 60)  # 90 хвилин
+
+        await asyncio.sleep(1 * 60)  #👈 а тут час але міняй тільки першу циферку 
+
  
-# 🔁 Після запуску додатку запускаємо розсилку
+# а отут розсилка оживає😎
 async def on_startup(application):
     asyncio.create_task(broadcast_message(application))
 
-# 🚀 Запуск бота
 app = ApplicationBuilder().token(TOKEN).post_init(on_startup).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("restart", restart))
